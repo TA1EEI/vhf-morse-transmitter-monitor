@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VHF Monitor RF Transmitter - TA1EEI</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #0c0c0c; color: #00ffcc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+        #canvas { display: block; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+        
+        #ui {
+            position: absolute; top: 20px; left: 20px; z-index: 10;
+            background: rgba(10, 15, 20, 0.92); border: 1px solid #00ffcc;
+            padding: 20px; border-radius: 8px; width: 420px;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.25);
+            max-height: 92vh; overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #00ffcc; padding-bottom: 8px; margin-bottom: 12px; }
+        .header-title h2 { margin: 0; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+        .header-title .author { font-size: 0.75rem; color: #00cca3; font-weight: bold; margin-top: 2px; }
+
+        .lang-switch { display: flex; gap: 5px; }
+        .lang-btn {
+            background: #111; color: #00ffcc; border: 1px solid #00ffcc;
+            padding: 3px 8px; font-size: 0.8rem; cursor: pointer; border-radius: 3px;
+        }
+        .lang-btn.active { background: #00ffcc; color: #000; font-weight: bold; }
+
+        /* Epilepsi Uyarısı */
+        .epilepsy-warning {
+            background: rgba(255, 51, 85, 0.15); border: 1px solid #ff3355;
+            color: #ff6688; padding: 10px; border-radius: 5px; font-size: 0.8rem;
+            margin-bottom: 12px; line-height: 1.3;
+        }
+
+        /* Teknik Bilgi / Kurulum Box */
+        .tech-info {
+            background: rgba(0, 255, 204, 0.05); border: 1px dashed #00ffcc;
+            padding: 10px; border-radius: 5px; font-size: 0.82rem; margin-bottom: 12px; color: #e0e0e0;
+        }
+        .tech-info ul { margin: 5px 0 0 0; padding-left: 18px; }
+        .tech-info li { margin-bottom: 4px; }
+
+        label { display: block; margin-top: 10px; font-weight: bold; font-size: 0.85rem; color: #00ffcc; }
+        textarea {
+            width: 100%; height: 60px; background: #000; color: #00ffcc;
+            border: 1px solid #00ffcc; padding: 8px; font-family: monospace; margin-top: 5px;
+            resize: vertical; border-radius: 4px;
+        }
+
+        .controls { display: flex; gap: 10px; margin-top: 15px; }
+        button.action-btn {
+            flex: 1; padding: 10px; background: #00ffcc; color: #000; border: none;
+            font-weight: bold; cursor: pointer; border-radius: 4px; transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        button.action-btn:hover { background: #00cca3; }
+        button#stopBtn { background: #ff3366; color: #fff; }
+        button#stopBtn:hover { background: #cc0033; }
+
+        .slider-group { margin-top: 12px; }
+        input[type="range"] { width: 100%; }
+
+        #status {
+            margin-top: 12px; font-size: 0.85rem; color: #fff;
+            background: rgba(255,255,255,0.08); padding: 8px; border-radius: 4px;
+            border-left: 3px solid #00ffcc;
+        }
+        
+        .morse-table {
+            margin-top: 10px; font-size: 0.72rem; display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 4px; max-height: 120px; overflow-y: auto; background: #000; padding: 6px; border: 1px solid #333;
+            border-radius: 4px;
+        }
+        .morse-item { background: #111; padding: 2px 4px; text-align: center; border-radius: 2px; color: #aaa; }
+
+        .footer {
+            margin-top: 15px; text-align: center; font-size: 0.75rem; color: #888;
+            border-top: 1px solid #222; padding-top: 10px; letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div id="ui">
+        <div class="header">
+            <div class="header-title">
+                <h2 id="title">VHF RF Morse Transmitter</h2>
+                <div class="author">Created by TA1EEI</div>
+            </div>
+            <div class="lang-switch">
+                <button class="lang-btn active" id="btnTR" onclick="setLanguage('tr')">TR</button>
+                <button class="lang-btn" id="btnEN" onclick="setLanguage('en')">EN</button>
+            </div>
+        </div>
+
+        <div class="epilepsy-warning" id="epilepsyWarning">
+            <strong>⚠️ EPİLEPSİ UYARISI:</strong> Bu uygulama yüksek frekansta flickering (yanıp sönen) desenler üretir. Fotosensitif epilepsi hastalarında nöbeti tetikleyebilir!
+        </div>
+
+        <div class="tech-info">
+            <strong id="techTitle">🔧 Optimal Kurulum Ayarları:</strong>
+            <ul>
+                <li id="reqMonitor">• Monitör Ayarı: <strong>1080p @ 60Hz</strong> olmalıdır.</li>
+                <li id="reqFreq">• Telsiz Frekansı: <strong>148.500 MHz</strong> (FM / CW / USB).</li>
+                <li id="reqPlacement">• Anten Konumu: Telsizi monitörün arkasındaki <strong>görüntü portuna (HDMI/DisplayPort)</strong> tutun.</li>
+            </ul>
+        </div>
+        
+        <label for="textInput" id="lblInput">Gönderilecek Metin:</label>
+        <textarea id="textInput" placeholder="Mesajınızı yazın...">SOS</textarea>
+
+        <div class="slider-group">
+            <label for="speed"><span id="lblSpeed">Nokta Süresi (Hız):</span> <span id="speedVal">120</span> ms</label>
+            <input type="range" id="speed" min="50" max="300" value="120">
+        </div>
+
+        <div class="controls">
+            <button class="action-btn" id="startBtn" onclick="startTransmission()">YAYINI BAŞLAT</button>
+            <button class="action-btn" id="stopBtn" onclick="stopTransmission()">DURDUR</button>
+        </div>
+
+        <div id="status">Durum: Hazır</div>
+
+        <label id="lblMorseTable">Mors Referans Tablosu:</label>
+        <div class="morse-table" id="morseTable"></div>
+
+        <div class="footer">
+            Created by <strong>TA1EEI</strong> | 73!
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        const translations = {
+            tr: {
+                title: "VHF RF Mors Vericisi",
+                epilepsyWarning: "<strong>⚠️ EPİLEPSİ UYARISI:</strong> Bu uygulama yüksek frekansta flickering (yanıp sönen) desenler üretir. Fotosensitif epilepsi hastalarında nöbeti tetikleyebilir!",
+                techTitle: "🔧 Optimal Kurulum Ayarları:",
+                reqMonitor: "• Monitör Ayarı: <strong>1080p @ 60Hz</strong> olmalıdır.",
+                reqFreq: "• Telsiz Frekansı: <strong>148.500 MHz</strong> (FM / CW / USB).",
+                reqPlacement: "• Anten Konumu: Telsizi monitörün arkasındaki <strong>görüntü portuna (HDMI/DisplayPort)</strong> tutun.",
+                lblInput: "Gönderilecek Metin:",
+                placeholderInput: "Mesajınızı yazın...",
+                lblSpeed: "Nokta Süresi (Hız):",
+                startBtn: "YAYINI BAŞLAT",
+                stopBtn: "DURDUR",
+                lblMorseTable: "Mors Referans Tablosu:",
+                statusPrefix: "Durum: ",
+                statusReady: "Hazır",
+                statusStopped: "Durduruldu.",
+                statusErrEmpty: "Hata: Lütfen bir metin girin!",
+                statusSpace: "[Boşluk]",
+                statusTransmitting: "Yayınlanıyor"
+            },
+            en: {
+                title: "VHF RF Morse Transmitter",
+                epilepsyWarning: "<strong>⚠️ EPILEPSY WARNING:</strong> This app produces high-frequency flashing patterns. May trigger seizures in photosensitive individuals!",
+                techTitle: "🔧 Optimal Setup Configuration:",
+                reqMonitor: "• Monitor Setup: Must be set to <strong>1080p @ 60Hz</strong>.",
+                reqFreq: "• Radio Frequency: <strong>148.500 MHz</strong> (FM / CW / USB).",
+                reqPlacement: "• Antenna Position: Hold radio close to the <strong>display port (HDMI/DisplayPort)</strong> behind the monitor.",
+                lblInput: "Text to Transmit:",
+                placeholderInput: "Type your message...",
+                lblSpeed: "Dot Duration (Speed):",
+                startBtn: "START TRANSMISSION",
+                stopBtn: "STOP",
+                lblMorseTable: "Morse Reference Table:",
+                statusPrefix: "Status: ",
+                statusReady: "Ready",
+                statusStopped: "Stopped.",
+                statusErrEmpty: "Error: Please enter text!",
+                statusSpace: "[Space]",
+                statusTransmitting: "Transmitting"
+            }
+        };
+
+        let currentLang = 'tr';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+
+            document.getElementById('btnTR').classList.toggle('active', lang === 'tr');
+            document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+
+            document.getElementById('title').innerText = t.title;
+            document.getElementById('epilepsyWarning').innerHTML = t.epilepsyWarning;
+            document.getElementById('techTitle').innerText = t.techTitle;
+            document.getElementById('reqMonitor').innerHTML = t.reqMonitor;
+            document.getElementById('reqFreq').innerHTML = t.reqFreq;
+            document.getElementById('reqPlacement').innerHTML = t.reqPlacement;
+            document.getElementById('lblInput').innerText = t.lblInput;
+            document.getElementById('textInput').placeholder = t.placeholderInput;
+            document.getElementById('lblSpeed').innerText = t.lblSpeed;
+            document.getElementById('startBtn').innerText = t.startBtn;
+            document.getElementById('stopBtn').innerText = t.stopBtn;
+            document.getElementById('lblMorseTable').innerText = t.lblMorseTable;
+
+            if (!isTransmitting) {
+                document.getElementById('status').innerText = t.statusPrefix + t.statusReady;
+            }
+        }
+
+        const MORSE_CODE = {
+            'A': '.-',    'B': '-...',  'C': '-.-.',  'D': '-..',   'E': '.',
+            'F': '..-.',  'G': '--.',   'H': '....',  'I': '..',    'J': '.---',
+            'K': '-.-',   'L': '.-..',  'M': '--',    'N': '-.',    'O': '---',
+            'P': '.--.',  'Q': '--.-',  'R': '.-.',   'S': '...',   'T': '-',
+            'U': '..-',   'V': '...-',  'W': '.--',   'X': '-..-',  'Y': '-.--',
+            'Z': '--..',  '1': '.----', '2': '..---', '3': '...--', '4': '....-',
+            '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
+            '0': '-----', '.': '.-.-.-',',': '--..--','?': '..--..','/': '-..-.',
+            '-': '-....-', '(': '-.--.', ')': '-.--.-'
+        };
+
+       
+        const tableContainer = document.getElementById('morseTable');
+        for (let char in MORSE_CODE) {
+            const div = document.createElement('div');
+            div.className = 'morse-item';
+            div.innerText = `${char}: ${MORSE_CODE[char]}`;
+            tableContainer.appendChild(div);
+        }
+
+        const speedInput = document.getElementById('speed');
+        const speedVal = document.getElementById('speedVal');
+        speedInput.oninput = () => speedVal.innerText = speedInput.value;
+
+        function showSignalPattern() {
+            const imgData = ctx.createImageData(canvas.width, canvas.height);
+            for (let i = 0; i < imgData.data.length; i += 4) {
+                const pixelIndex = (i / 4);
+                const x = pixelIndex % canvas.width;
+                const color = (x % 2 === 0) ? 255 : 0; // 1px Siyah / 1px Beyaz Dikey Şeritler
+                imgData.data[i] = color;
+                imgData.data[i+1] = color;
+                imgData.data[i+2] = color;
+                imgData.data[i+3] = 255;
+            }
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        function hideSignalPattern() {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        let isTransmitting = false;
+
+        function stopTransmission() {
+            isTransmitting = false;
+            hideSignalPattern();
+            const t = translations[currentLang];
+            document.getElementById('status').innerText = t.statusPrefix + t.statusStopped;
+        }
+
+        async function startTransmission() {
+            if (isTransmitting) return;
+            isTransmitting = true;
+
+            const text = document.getElementById('textInput').value.toUpperCase();
+            const status = document.getElementById('status');
+            const t = translations[currentLang];
+
+            if (!text.trim()) {
+                status.innerText = t.statusErrEmpty;
+                isTransmitting = false;
+                return;
+            }
+
+            while (isTransmitting) {
+                for (let i = 0; i < text.length; i++) {
+                    if (!isTransmitting) break;
+
+                    const char = text[i];
+                    const dotLen = parseInt(speedInput.value);
+
+                    if (char === ' ') {
+                        status.innerText = `${t.statusPrefix} ${t.statusSpace}`;
+                        hideSignalPattern();
+                        await sleep(dotLen * 7);
+                        continue;
+                    }
+
+                    const morseSeq = MORSE_CODE[char];
+                    if (!morseSeq) continue;
+
+                    status.innerText = `${t.statusPrefix} ${t.statusTransmitting}: '${char}' (${morseSeq})`;
+
+                    for (let symbol of morseSeq) {
+                        if (!isTransmitting) break;
+
+                        if (symbol === '.') {
+                            showSignalPattern();
+                            await sleep(dotLen);
+                        } else if (symbol === '-') {
+                            showSignalPattern();
+                            await sleep(dotLen * 3);
+                        }
+
+                        hideSignalPattern();
+                        await sleep(dotLen);
+                    }
+
+                    await sleep(dotLen * 3);
+                }
+                
+                await sleep(1500);
+            }
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
