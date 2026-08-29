@@ -9,6 +9,65 @@
         body { margin: 0; background: #0c0c0c; color: #00ffcc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
         #canvas { display: block; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
         
+        /* Modal Overlay */
+        #modalOverlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(5, 8, 12, 0.92); backdrop-filter: blur(8px);
+            z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+
+        .modal-card {
+            background: rgba(12, 18, 24, 0.98); border: 2px solid #00ffcc;
+            border-radius: 12px; width: 100%; max-width: 550px; max-height: 90vh;
+            overflow-y: auto; padding: 24px; box-shadow: 0 0 35px rgba(0, 255, 204, 0.3);
+            color: #e0e0e0; font-size: 0.88rem; line-height: 1.4;
+        }
+
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #00ffcc; padding-bottom: 10px; margin-bottom: 15px;
+        }
+
+        .modal-title { margin: 0; font-size: 1.15rem; color: #00ffcc; text-transform: uppercase; letter-spacing: 1px; }
+
+        .modal-body { display: flex; flex-direction: column; gap: 12px; }
+
+        .modal-warning-box {
+            background: rgba(255, 51, 85, 0.15); border: 1px solid #ff3355;
+            color: #ff6688; padding: 10px; border-radius: 6px; font-size: 0.8rem;
+        }
+
+        .modal-disclaimer-box {
+            background: rgba(255, 170, 0, 0.15); border: 1px solid #ffaa00;
+            color: #ffcc66; padding: 10px; border-radius: 6px; font-size: 0.8rem;
+        }
+
+        .modal-guide-box {
+            background: rgba(0, 255, 204, 0.06); border: 1px solid #00ffcc;
+            padding: 12px; border-radius: 6px; font-size: 0.83rem;
+        }
+        .modal-guide-box h4 { margin: 0 0 8px 0; color: #00ffcc; }
+        .modal-guide-box ul { margin: 0; padding-left: 18px; }
+        .modal-guide-box li { margin-bottom: 6px; }
+
+        .consent-group {
+            display: flex; align-items: center; gap: 10px;
+            margin-top: 10px; background: rgba(255, 255, 255, 0.04);
+            padding: 10px; border-radius: 6px; border: 1px solid #333;
+        }
+        .consent-group input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #00ffcc; }
+        .consent-group label { cursor: pointer; font-size: 0.82rem; color: #fff; margin: 0; }
+
+        .btn-start-app {
+            background: #00ff88; color: #000; font-weight: bold; font-size: 0.95rem;
+            padding: 12px; border: none; border-radius: 6px; cursor: pointer;
+            transition: all 0.2s ease; margin-top: 10px; text-transform: uppercase;
+            letter-spacing: 1px; width: 100%;
+        }
+        .btn-start-app:hover:not(:disabled) { background: #00cc66; box-shadow: 0 0 15px rgba(0, 255, 136, 0.5); }
+        .btn-start-app:disabled { background: #224433; color: #666; cursor: not-allowed; opacity: 0.6; }
+
+        /* Main UI Panel */
         #ui {
             position: absolute; top: 15px; left: 15px; z-index: 10;
             background: rgba(10, 15, 20, 0.94); border: 1px solid #00ffcc;
@@ -88,6 +147,46 @@
     </style>
 </head>
 <body>
+
+    <!-- Modal Warning Overlay -->
+    <div id="modalOverlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title" id="mTitle">SAFETY & SETUP NOTICE</h3>
+                <div class="lang-switch">
+                    <button class="lang-btn active" id="mBtnEN" onclick="setLanguage('en')">EN</button>
+                    <button class="lang-btn" id="mBtnTR" onclick="setLanguage('tr')">TR</button>
+                    <button class="lang-btn" id="mBtnFR" onclick="setLanguage('fr')">FR</button>
+                    <button class="lang-btn" id="mBtnDE" onclick="setLanguage('de')">DE</button>
+                    <button class="lang-btn" id="mBtnES" onclick="setLanguage('es')">ES</button>
+                    <button class="lang-btn" id="mBtnZH" onclick="setLanguage('zh')">ZH</button>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <div class="modal-warning-box" id="mEpilepsy"></div>
+                <div class="modal-disclaimer-box" id="mDisclaimer"></div>
+                
+                <div class="modal-guide-box">
+                    <h4 id="mGuideTitle">⚙️ Required Setup Instructions</h4>
+                    <ul>
+                        <li id="mStepFreq">Frequency: Tune radio to detected target frequency (<strong id="mFreqVal" style="color:#00ffcc;">Scanning...</strong>)</li>
+                        <li id="mStepBand">Bandwidth: Set receiver bandwidth to <strong>WIDE</strong>.</li>
+                        <li id="mStepMode">Radio Mode: Set modulation to <strong>AM / USB / CW</strong>.</li>
+                        <li id="mStepSquelch">Squelch: Set Squelch control to <strong>0</strong> (unmuted noise).</li>
+                        <li id="mStepAntenna">Antenna Position: Hold radio antenna directly behind monitor near the <strong>display port (HDMI / DisplayPort)</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="consent-group">
+                    <input type="checkbox" id="consentCheckbox" onchange="toggleStartButton()">
+                    <label for="consentCheckbox" id="lblConsent">I acknowledge the risks and accept full responsibility for experimental use.</label>
+                </div>
+
+                <button id="btnStartApp" class="btn-start-app" disabled onclick="closeModal()">LET'S START</button>
+            </div>
+        </div>
+    </div>
 
     <canvas id="canvas"></canvas>
 
@@ -172,8 +271,18 @@
         const translations = {
             en: {
                 title: "VHF RF Morse Transmitter",
+                mTitle: "SAFETY & SETUP NOTICE",
                 epilepsyWarning: "<strong>⚠️ EPILEPSY WARNING:</strong> High-frequency flashing patterns. May trigger seizures in photosensitive individuals!",
-                disclaimer: "<strong>⚠️ DISCLAIMER:</strong> Strictly for experimental purposes. User assumes all responsibility for any damage. Translations may not be 100% accurate.",
+                disclaimer: "<strong>⚠️ DISCLAIMER:</strong> Strictly for experimental and educational purposes. User assumes all responsibility for any damage. Translations may not be 100% accurate.",
+                mGuideTitle: "⚙️ Required Setup Instructions:",
+                mStepFreqPrefix: "• Frequency: Tune radio to detected target frequency (",
+                mStepFreqSuffix: ")",
+                mStepBand: "• Bandwidth: Set receiver bandwidth to <strong>WIDE</strong>.",
+                mStepMode: "• Radio Mode: Set modulation to <strong>AM / USB / CW</strong>.",
+                mStepSquelch: "• Squelch: Set Squelch control to <strong>0</strong> (unmuted noise).",
+                mStepAntenna: "• Antenna Position: Hold radio antenna directly behind monitor near the <strong>display port (HDMI / DisplayPort)</strong>.",
+                lblConsent: "I read, understand, and accept all responsibility for educational & experimental usage.",
+                btnStartApp: "LET'S START",
                 techTitle: "🔧 Optimal Setup Configuration:",
                 lblFreqHeader: "• Screen & Freq:",
                 reqMode: "• Radio Settings: Set mode to <strong>FM / USB / CW</strong> and Squelch to <strong>0</strong>.",
@@ -193,8 +302,18 @@
             },
             tr: {
                 title: "VHF RF Mors Vericisi",
+                mTitle: "GÜVENLİK VE KURULUM UYARISI",
                 epilepsyWarning: "<strong>⚠️ EPİLEPSİ UYARISI:</strong> Yüksek frekansta yanıp sönen desenler içerir. Epilepsi hastalarında nöbeti tetikleyebilir!",
-                disclaimer: "<strong>⚠️ SORUMLULUK REDDİ:</strong> Tamamen deney amaçlıdır. Oluşabilecek zararlardan kişi sorumludur. Çeviriler %100 doğru olmayabilir.",
+                disclaimer: "<strong>⚠️ SORUMLULUK REDDİ:</strong> Tamamen deney ve öğretici amaçlıdır. Oluşabilecek tüm zararlardan kullanıcı sorumludur. Çeviriler %100 doğru olmayabilir.",
+                mGuideTitle: "⚙️ Gerekli Kurulum Adımları:",
+                mStepFreqPrefix: "• Frekans: Telsizinizi hesaplanan hedef frekansa ayarlayın (",
+                mStepFreqSuffix: ")",
+                mStepBand: "• Bant Genişliği: Telsiz ayarını <strong>WIDE (Geniş)</strong> olarak seçin.",
+                mStepMode: "• Telsiz Modu: Modülasyonu <strong>AM / USB / CW</strong> bandına getirin.",
+                mStepSquelch: "• Squelch: Squelch (Gürültü Bastırma) seviyesini <strong>0</strong> yapın.",
+                mStepAntenna: "• Anten Konumu: Telsiz antenini monitörün arkasındaki <strong>görüntü portuna (HDMI/DisplayPort)</strong> tutun.",
+                lblConsent: "Uyarıları okudum, deneysel ve öğretici kullanımı ile tüm sorumluluğu kabul ediyorum.",
+                btnStartApp: "BAŞLAYALIM",
                 techTitle: "🔧 Optimal Kurulum Ayarları:",
                 lblFreqHeader: "• Ekran & Frekans:",
                 reqMode: "• Telsiz Ayarları: <strong>FM / USB / CW</strong> moduna geçilmeli ve Squelch ayarı <strong>0</strong> yapılmalıdır.",
@@ -214,8 +333,18 @@
             },
             fr: {
                 title: "Émetteur Morse RF VHF",
+                mTitle: "AVERTISSEMENT ET CONFIGURATION",
                 epilepsyWarning: "<strong>⚠️ AVERTISSEMENT ÉPILEPSIE:</strong> Clignotements à haute fréquence. Risque de crises chez les personnes photosensibles!",
-                disclaimer: "<strong>⚠️ AVERTISSEMENT:</strong> À des fins expérimentales uniquement. L'utilisateur est seul responsable. Les traductions peuvent ne pas être exactes à 100%.",
+                disclaimer: "<strong>⚠️ AVERTISSEMENT:</strong> À des fins expérimentales et éducatives uniquement. L'utilisateur est seul responsable. Les traductions peuvent ne pas être exactes à 100%.",
+                mGuideTitle: "⚙️ Instructions de Configuration Required:",
+                mStepFreqPrefix: "• Fréquence: Réglez la radio sur la fréquence cible (",
+                mStepFreqSuffix: ")",
+                mStepBand: "• Largeur de bande: Réglez la largeur de bande sur <strong>WIDE</strong>.",
+                mStepMode: "• Mode Radio: Réglez la modulation sur <strong>AM / USB / CW</strong>.",
+                mStepSquelch: "• Squelch: Réglez le Squelch sur <strong>0</strong>.",
+                mStepAntenna: "• Position Antenne: Maintenez l'antenne près du <strong>port vidéo (HDMI/DisplayPort)</strong>.",
+                lblConsent: "J'ai lu et j'accepte toute responsabilité pour cet usage expérimental et éducatif.",
+                btnStartApp: "COMMENCER",
                 techTitle: "🔧 Configuration Optimale:",
                 lblFreqHeader: "• Écran & Fréq:",
                 reqMode: "• Réglages Radio: Réglez le mode sur <strong>FM / USB / CW</strong> et le Squelch sur <strong>0</strong>.",
@@ -235,8 +364,18 @@
             },
             de: {
                 title: "VHF RF Morsesender",
+                mTitle: "SICHERHEIT & EINSTELLUNGEN",
                 epilepsyWarning: "<strong>⚠️ EPILEPSIE-WARNUNG:</strong> Hochfrequente Blitze. Kann bei fotosensiblen Personen Anfälle auslösen!",
-                disclaimer: "<strong>⚠️ HAFTUNGSAUSSCHLUSS:</strong> Nur für experimentelle Zwecke. Der Nutzer haftet für Schäden. Übersetzungen sind evtl. nicht 100% genau.",
+                disclaimer: "<strong>⚠️ HAFTUNGSAUSSCHLUSS:</strong> Nur für experimentelle und didaktische Zwecke. Der Nutzer haftet für alle Schäden.",
+                mGuideTitle: "⚙️ Erforderliche Einstellungen:",
+                mStepFreqPrefix: "• Frequenz: Stellen Sie das Funkgerät auf die Zielfrequenz ein (",
+                mStepFreqSuffix: ")",
+                mStepBand: "• Bandbreite: Stellen Sie die Bandbreite auf <strong>WIDE</strong>.",
+                mStepMode: "• Funkmodus: Modulation auf <strong>AM / USB / CW</strong> stellen.",
+                mStepSquelch: "• Squelch: Squelch-Einstellung auf <strong>0</strong> stellen.",
+                mStepAntenna: "• Antennenposition: Halten Sie die Antenne an den <strong>Display-Port (HDMI/DisplayPort)</strong>.",
+                lblConsent: "Ich habe die Warnungen gelesen und übernehme die Verantwortung.",
+                btnStartApp: "JETZT STARTEN",
                 techTitle: "🔧 Optimale Einstellungen:",
                 lblFreqHeader: "• Display & Freq:",
                 reqMode: "• Funkeinstellungen: Modus auf <strong>FM / USB / CW</strong> und Squelch auf <strong>0</strong> stellen.",
@@ -256,8 +395,18 @@
             },
             es: {
                 title: "Transmisor Morse RF VHF",
+                mTitle: "AVISO DE SEGURIDAD Y CONFIGURACIÓN",
                 epilepsyWarning: "<strong>⚠️ ADVERTENCIA DE EPILEPSIA:</strong> Destellos de alta frecuencia. ¡Puede provocar convulsiones!",
-                disclaimer: "<strong>⚠️ EXENCIÓN DE RESPONSABILIDAD:</strong> Solo uso experimental. El usuario asume toda la responsabilidad. Las traducciones pueden no ser 100% precisas.",
+                disclaimer: "<strong>⚠️ EXENCIÓN DE RESPONSABILIDAD:</strong> Solo para fines experimentales y educativos. El usuario asume toda la responsabilidad.",
+                mGuideTitle: "⚙️ Instrucciones de Configuración Required:",
+                mStepFreqPrefix: "• Frecuencia: Ajuste la radio a la frecuencia objetivo (",
+                mStepFreqSuffix: ")",
+                mStepBand: "• Ancho de Banda: Ajuste el ancho de banda a <strong>WIDE</strong>.",
+                mStepMode: "• Modo Radio: Ajuste el modo a <strong>AM / USB / CW</strong>.",
+                mStepSquelch: "• Squelch: Ajuste el Squelch a <strong>0</strong>.",
+                mStepAntenna: "• Posición Antena: Sostenga la antena cerca del <strong>puerto de pantalla (HDMI/DisplayPort)</strong>.",
+                lblConsent: "He leído y acepto toda la responsabilidad de este uso experimental.",
+                btnStartApp: "EMPEZAR",
                 techTitle: "🔧 Configuración Óptima:",
                 lblFreqHeader: "• Pantalla y Frec:",
                 reqMode: "• Ajustes de Radio: Ajuste el modo a <strong>FM / USB / CW</strong> y el Squelch a <strong>0</strong>.",
@@ -277,8 +426,18 @@
             },
             zh: {
                 title: "VHF 射频摩尔斯电码发射器",
+                mTitle: "安全与设置须知",
                 epilepsyWarning: "<strong>⚠️ 癫痫警告：</strong> 高频闪烁图案，可能引发光敏性癫痫发作！",
-                disclaimer: "<strong>⚠️ 免责声明：</strong> 仅供实验用途。使用者自行承担所有责任。翻译可能不完全准确。",
+                disclaimer: "<strong>⚠️ 免责声明：</strong> 仅供实验与教学用途。使用者自行承担所有责任与后果。",
+                mGuideTitle: "⚙️ 必须配置步骤：",
+                mStepFreqPrefix: "• 频率：将对讲机调至检测到的目标频率 (",
+                mStepFreqSuffix: ")",
+                mStepBand: "• 带宽：将接收带宽设置为 <strong>WIDE (宽)</strong>。",
+                mStepMode: "• 模式：切换至 <strong>AM / USB / CW</strong> 模式。",
+                mStepSquelch: "• 静噪：将静噪 (Squelch) 调至 <strong>0</strong>。",
+                mStepAntenna: "• 天线位置：将天线靠近显示器背面的 <strong>视频接口 (HDMI/DisplayPort)</strong>。",
+                lblConsent: "我已阅读并理解警告，愿承担实验及教学使用的全部责任。",
+                btnStartApp: "开始使用",
                 techTitle: "🔧 最佳设置：",
                 lblFreqHeader: "• 屏幕与频率：",
                 reqMode: "• 对讲机设置：切换至 <strong>FM / USB / CW</strong> 模式并将静噪 (Squelch) 设为 <strong>0</strong>。",
@@ -299,6 +458,17 @@
         };
 
         let currentLang = 'en';
+        let currentCalculatedFreq = 'Scanning...';
+
+        function autoDetectLanguage() {
+            const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+            if (userLang.startsWith('tr')) return 'tr';
+            if (userLang.startsWith('de')) return 'de';
+            if (userLang.startsWith('fr')) return 'fr';
+            if (userLang.startsWith('es')) return 'es';
+            if (userLang.startsWith('zh')) return 'zh';
+            return 'en';
+        }
 
         function setLanguage(lang) {
             currentLang = lang;
@@ -306,9 +476,26 @@
 
             ['EN', 'TR', 'FR', 'DE', 'ES', 'ZH'].forEach(l => {
                 const btn = document.getElementById('btn' + l);
-                if (btn) btn.classList.toggle('active', l.toLowerCase() === lang);
+                const mBtn = document.getElementById('mBtn' + l);
+                const isActive = l.toLowerCase() === lang;
+                if (btn) btn.classList.toggle('active', isActive);
+                if (mBtn) mBtn.classList.toggle('active', isActive);
             });
 
+            // Modal elements
+            document.getElementById('mTitle').innerText = t.mTitle;
+            document.getElementById('mEpilepsy').innerHTML = t.epilepsyWarning;
+            document.getElementById('mDisclaimer').innerHTML = t.disclaimer;
+            document.getElementById('mGuideTitle').innerText = t.mGuideTitle;
+            document.getElementById('mStepFreq').innerHTML = `${t.mStepFreqPrefix}<strong id="mFreqVal" style="color:#00ffcc;">${currentCalculatedFreq}</strong>${t.mStepFreqSuffix}`;
+            document.getElementById('mStepBand').innerHTML = t.mStepBand;
+            document.getElementById('mStepMode').innerHTML = t.mStepMode;
+            document.getElementById('mStepSquelch').innerHTML = t.mStepSquelch;
+            document.getElementById('mStepAntenna').innerHTML = t.mStepAntenna;
+            document.getElementById('lblConsent').innerText = t.lblConsent;
+            document.getElementById('btnStartApp').innerText = t.btnStartApp;
+
+            // Main UI elements
             document.getElementById('title').innerText = t.title;
             document.getElementById('epilepsyWarning').innerHTML = t.epilepsyWarning;
             document.getElementById('disclaimerNote').innerHTML = t.disclaimer;
@@ -326,6 +513,16 @@
             if (!isTransmitting) {
                 document.getElementById('status').innerText = t.statusPrefix + t.statusReady;
             }
+        }
+
+        function toggleStartButton() {
+            const cb = document.getElementById('consentCheckbox');
+            document.getElementById('btnStartApp').disabled = !cb.checked;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modalOverlay');
+            if (modal) modal.style.display = 'none';
         }
 
         function detectScreenSpecs() {
@@ -357,9 +554,16 @@
                 estimatedMHz = ((w * 1.15) * (h * 1.04) * hz) / 1000000;
             }
 
+            currentCalculatedFreq = `${estimatedMHz.toFixed(3)} MHz`;
+
             const freqDisplay = document.getElementById('detectedFreq');
             if (freqDisplay) {
-                freqDisplay.innerHTML = `${w}x${h} @ ~${hz}Hz ➔ <strong>${estimatedMHz.toFixed(3)} MHz</strong>`;
+                freqDisplay.innerHTML = `${w}x${h} @ ~${hz}Hz ➔ <strong>${currentCalculatedFreq}</strong>`;
+            }
+
+            const mFreqVal = document.getElementById('mFreqVal');
+            if (mFreqVal) {
+                mFreqVal.innerText = currentCalculatedFreq;
             }
         }
 
@@ -490,7 +694,8 @@
 
         window.onload = () => {
             initPattern();
-            setLanguage('en');
+            const detectedLang = autoDetectLanguage();
+            setLanguage(detectedLang);
             detectScreenSpecs();
         };
     </script>
