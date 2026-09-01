@@ -1,6 +1,6 @@
 # 📡 VHF Monitor RF Transmitter (TEMPEST / EMI Side-Channel Morse Generator)
 
-[![ORCID](https://img.shields.io/badge/ORCID-0009--0001--1628--2183-a6ce39.svg)](https://orcid.org/)
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0001--1628--2183-a6ce39.svg)]([https://orcid.org/](https://orcid.org/0009-0001-1628-2183))
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Featured on Hackaday](https://img.shields.io/badge/Featured%20on-Hackaday-informational)](https://hackaday.com/2026/08/30/get-your-monitor-transmitting-vhf-with-a-browser-tool/)
 [![Featured on RTL-SDR](https://img.shields.io/badge/Featured%20on-RTL--SDR.com-blue)](https://www.rtl-sdr.com/an-html-browser-page-that-uses-display-pixel-clock-emi-leakage-to-transmit-vhf-morse-code/)
