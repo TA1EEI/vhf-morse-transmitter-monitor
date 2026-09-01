@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Isik"
+    given-names: "Efe"
+    orcid: "https://orcid.org/0009-0001-1628-2183"
+title: "VHF Morse Code Transmission via Display Pixel-Clock Harmonics & EMI Leakage"
+version: 1.0.0
+date-released: 2026-08-30
+url: "https://github.com/TA1EEI/vhf-morse-transmitter-monitor"
+license: MIT
