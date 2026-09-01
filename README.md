@@ -1,13 +1,20 @@
+# 📡 VHF Monitor RF Transmitter (TEMPEST / EMI Side-Channel Morse Generator)
+
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0000--0000--0000-a6ce39.svg)](https://orcid.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Featured on Hackaday](https://img.shields.io/badge/Featured%20on-Hackaday-informational)](https://hackaday.com/2026/08/30/get-your-monitor-transmitting-vhf-with-a-browser-tool/)
+[![Featured on RTL-SDR](https://img.shields.io/badge/Featured%20on-RTL--SDR.com-blue)](https://www.rtl-sdr.com/an-html-browser-page-that-uses-display-pixel-clock-emi-leakage-to-transmit-vhf-morse-code/)
+
+**Author:** TA1EEI (Efe Işık)  
+**Version:** 1.2  
+**License:** MIT (Open Source / Educational & Experimental)
 
 ---
 
-# 📡 VHF Monitor RF Transmitter (TEMPEST / EMI Side-Channel Morse Generator)
+## 📰 Featured In & Media Coverage
 
-**Author:** TA1EEI
-
-**Version:** 1.2
-
-**License:** MIT (Open Source / Educational & Experimental)
+* **[Hackaday]** - [Get Your Monitor Transmitting VHF With A Browser Tool](https://hackaday.com/2026/08/30/get-your-monitor-transmitting-vhf-with-a-browser-tool/)
+* **[RTL-SDR.com]** - [An HTML Browser Page That Uses Display Pixel Clock EMI Leakage to Transmit VHF Morse Code](https://www.rtl-sdr.com/an-html-browser-page-that-uses-display-pixel-clock-emi-leakage-to-transmit-vhf-morse-code/)
 
 ---
 
@@ -23,40 +30,36 @@ Remarkably, this project operates **without any radio hardware, RF transmitters,
 
 Modern video pipelines are not purely optical; they are high-speed digital electronics operating at high frequencies. This project exploits **Unintentional Electromagnetic Radiation (EMI)** to broadcast readable RF signals.
 
-### 1. The Video Pixel Clock ($f_{pixel}$)
+### 1. The Video Pixel Clock ($f_{\text{pixel}}$)
 
-To display a stable image, a graphics card continuously pushes video data to a monitor frame-by-frame, line-by-line. The base clock frequency governing this pixel stream is known as the **Pixel Clock Frequency** ($f_{pixel}$).
+To display a stable image, a graphics card continuously pushes video data to a monitor frame-by-frame, line-by-line. The base clock frequency governing this pixel stream is known as the **Pixel Clock Frequency** ($f_{\text{pixel}}$).
 
 The Pixel Clock is calculated based on total frame dimensions (including active display area plus horizontal and vertical blanking intervals) multiplied by the screen refresh rate:
 
-$$f_{pixel} = (H_{total}) \times (V_{total}) \times f_{refresh}$$
+$$f_{\text{pixel}} = H_{\text{total}} \times V_{\text{total}} \times f_{\text{refresh}}$$
 
 Where:
+* $H_{\text{total}} = H_{\text{active}} + H_{\text{blanking}}$ (Horizontal total pixels)
+* $V_{\text{total}} = V_{\text{active}} + V_{\text{blanking}}$ (Vertical total lines)
+* $f_{\text{refresh}}$ = Screen refresh rate in Hz
 
-* $H_{total} = H_{active} + H_{blanking}$ (Horizontal total pixels)
-* $V_{total} = V_{active} + V_{blanking}$ (Vertical total lines)
-* $f_{refresh} = \text{Screen refresh rate in Hz}$
-
-#### Example Calculation (Standard 1080p @ 60Hz):
-
+**Example Calculation (Standard 1080p @ 60Hz):**
 * Active Resolution: $1920 \times 1080$
-* CEA-861 Timing Standard: $H_{total} = 2200$, $V_{total} = 1125$
+* CEA-861 Timing Standard: $H_{\text{total}} = 2200$, $V_{\text{total}} = 1125$
 * Refresh Rate: $60\text{ Hz}$
-
-$$f_{pixel} = 2200 \times 1125 \times 60 = 148,500,000\text{ Hz} = \mathbf{148.500\text{ MHz}}$$
+$$f_{\text{pixel}} = 2200 \times 1125 \times 60 = 148,500,000\text{ Hz} = 148.500\text{ MHz}$$
 
 ### 2. High-Frequency Pattern Modulation
 
 When the screen displays a plain black or static background, the signal current across the video cable remains relatively uniform.
 
-However, when the application renders a alternating $1 \times 1$ pixel pattern (alternating black `#000000` and white `#FFFFFF` pixels side by side), every adjacent clock cycle forces the display interface serializer (TMDS or FRL in HDMI; Main Link Lanes in DisplayPort) to toggle its voltage state rapidly.
+However, when the application renders an alternating $1 \times 1$ pixel pattern (alternating black `#000000` and white `#FFFFFF` pixels side by side), every adjacent clock cycle forces the display interface serializer (TMDS or FRL in HDMI; Main Link Lanes in DisplayPort) to toggle its voltage state rapidly.
 
-This maximum state toggling induces a strong electromagnetic field at the exact pixel clock frequency ($148.500\text{ MHz}$), broadcasting an RF carrier wave into space.
+This maximum state toggling induces a strong electromagnetic field at the exact pixel clock frequency (**148.500 MHz**), broadcasting an RF carrier wave into space.
 
 ### 3. CW (Continuous Wave) / AM Morse Modulation
 
 To encode readable data into this electromagnetic radiation:
-
 * **Carrier ON (Mark):** The application renders a high-contrast alternating pixel pattern across the entire screen canvas. The video line serializer fluctuates at maximum capacity, emitting strong RF interference.
 * **Carrier OFF (Space):** The canvas switches instantly to solid black (`#000000`). Clock transitions drop to minimal baseline noise, collapsing the radiated RF output.
 
@@ -68,20 +71,20 @@ By timing these pattern toggles to match standardized **Morse Code element lengt
 
 Different monitor resolutions and refresh rates produce distinct fundamental frequencies. Below are calculated target frequencies commonly generated by display timings:
 
-| Resolution | Refresh Rate (Hz) | Total Timings ($H_{total} \times V_{total}$) | Fundamental Target Frequency |
-| --- | --- | --- | --- |
+| Resolution | Refresh Rate (Hz) | Total Timings ($H_{\text{total}} \times V_{\text{total}}$) | Fundamental Target Frequency |
+| :--- | :--- | :--- | :--- |
 | **1920 x 1080** | 60 Hz | $2200 \times 1125$ | **148.500 MHz** (VHF Amateur 2m Band) |
 | **1920 x 1080** | 144 Hz | $2200 \times 1125$ | **356.400 MHz** (UHF Military / Aviation) |
 | **2560 x 1440** | 60 Hz | $2720 \times 1481$ | **241.500 MHz** (VHF High) |
 | **1280 x 720** | 60 Hz | $1650 \times 750$ | **74.250 MHz** (VHF Low / 4m Band) |
 
-> **Note on Harmonics:** In addition to the fundamental pixel clock frequency, strong secondary and tertiary harmonics can also be detected across higher bands ($2 \times f_{pixel}$, $3 \times f_{pixel}$).
+> **Note on Harmonics:** In addition to the fundamental pixel clock frequency, strong secondary and tertiary harmonics can also be detected across higher bands ($2 \times f_{\text{pixel}}$, $3 \times f_{\text{pixel}}$).
 
 ---
 
 ## 🚀 Key Features in Version 1.2
 
-* **🌐 Automatic Multilingual Detection:** Reads `navigator.language` on startup and localizes the UI automatically into **English**, **Turkish**, **French**, **German**, **Spanish**, or **Chinese**.
+* **🌐 Automatic Multilingual Detection:** Reads `navigator.language` on startup and localizes the UI automatically into English, Turkish, French, German, Spanish, or Chinese.
 * **⚡ Live Frequency Calculation Engine:** Probes resolution and refresh rate via high-resolution timers (`performance.now()`) to dynamically predict the active transmission frequency.
 * **🛡️ Interactive Safety & Consent Overlay:** Features an interactive startup modal providing photosensitive epilepsy warnings and receiver setup steps.
 * **🖥️ Dynamic Fullscreen Optimization:** Auto-requests fullscreen mode on transmission start to maximize screen surface area and boost emitted RF power.
@@ -91,14 +94,13 @@ Different monitor resolutions and refresh rates produce distinct fundamental fre
 
 ## ⚙️ Receiver Setup & Hardware Instructions
 
-To listen to transmissions using a handheld radio (e.g., Baofeng, Yaesu, Icom) or an SDR (RTL-SDR, HackRF, Airspy):
-
+To listen to transmissions using a handheld radio (e.g., Quansheng, Baofeng, Yaesu, Icom) or an SDR (RTL-SDR, HackRF, Airspy):
 1. **Calculate Target Frequency:** Open the app; it will display your detected target frequency (e.g., `148.500 MHz`).
 2. **Set Receiver Frequency:** Tune your radio/SDR precisely to that frequency.
 3. **Select Radio Mode:** Switch modulation mode to **AM**, **USB**, **CW**, or **FM**.
-4. **Disable Squelch:** Set Squelch to **`0`** (unmuted, open static noise).
+4. **Disable Squelch:** Set Squelch to **0** (unmuted, open static noise).
 5. **Set Bandwidth:** Choose **WIDE** receiver filter bandwidth.
-6. **Antenna Placement:** Hold your receiver antenna **directly behind your monitor**, as close as possible to the **HDMI or DisplayPort connector**.
+6. **Antenna Placement:** Hold your receiver antenna **directly behind your monitor**, as close as possible to the HDMI or DisplayPort connector.
 
 ---
 
@@ -109,4 +111,17 @@ To listen to transmissions using a handheld radio (e.g., Baofeng, Yaesu, Icom) o
 
 ---
 
-*73 de TA1EEI*
+## 📖 Citation
+
+If you use this project in your research, academic work, or technical experiments, please cite it as follows:
+
+```bibtex
+@software{isik2026vhf,
+  author = {Isik, Efe},
+  title = {VHF Monitor RF Transmitter: Browser-Based TEMPEST / EMI Side-Channel Morse Generator},
+  year = {2026},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{[https://github.com/TA1EEI/vhf-morse-transmitter-monitor](https://github.com/TA1EEI/vhf-morse-transmitter-monitor)}},
+  license = {MIT}
+}
