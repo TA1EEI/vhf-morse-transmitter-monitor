@@ -112,13 +112,6 @@ To listen to transmissions using a handheld radio (e.g., Quansheng, Baofeng, Yae
 
 ---
 
-## 📖 Citation
-
-If you use this project in your research, academic work, or technical experiments, please cite it as follows:
-
-## Citation
-
-If you use this project or reference the EMI transmission methodology in your research, please cite:
 
 ## 📖 Citation
 
