@@ -1,12 +1,13 @@
 # 📡 VHF Monitor RF Transmitter (TEMPEST / EMI Side-Channel Morse Generator)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22307838.svg)](https://doi.org/10.5281/zenodo.22307838)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--1628--2183-a6ce39.svg)](https://orcid.org/0009-0001-1628-2183)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Featured on Hackaday](https://img.shields.io/badge/Featured%20on-Hackaday-informational)](https://hackaday.com/2026/08/30/get-your-monitor-transmitting-vhf-with-a-browser-tool/)
 [![Featured on RTL-SDR](https://img.shields.io/badge/Featured%20on-RTL--SDR.com-blue)](https://www.rtl-sdr.com/an-html-browser-page-that-uses-display-pixel-clock-emi-leakage-to-transmit-vhf-morse-code/)
 
 **Author:** TA1EEI (Efe Işık)  
-**Version:** 1.2  
+**Version:** 1.3  
 **License:** MIT (Open Source / Educational & Experimental)
 
 ---
@@ -115,13 +116,18 @@ To listen to transmissions using a handheld radio (e.g., Quansheng, Baofeng, Yae
 
 If you use this project in your research, academic work, or technical experiments, please cite it as follows:
 
+## Citation
+
+If you use this project or reference the EMI transmission methodology in your research, please cite:
+
 ```bibtex
-@software{isik2026vhf,
-  author = {Isik, Efe},
-  title = {VHF Monitor RF Transmitter: Browser-Based TEMPEST / EMI Side-Channel Morse Generator},
-  year = {2026},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{[https://github.com/TA1EEI/vhf-morse-transmitter-monitor](https://github.com/TA1EEI/vhf-morse-transmitter-monitor)}},
-  license = {MIT}
+@software{isik_2026_22307838,
+  author       = {Işık, Efe},
+  title        = {vhf-morse-transmitter-monitor: v1.3.0},
+  month        = sep,
+  year         = 2026,
+  publisher    = {Zenodo},
+  version      = {v1.3.0},
+  doi          = {10.5281/zenodo.22307838},
+  url          = {[https://doi.org/10.5281/zenodo.22307838](https://doi.org/10.5281/zenodo.22307838)}
 }
