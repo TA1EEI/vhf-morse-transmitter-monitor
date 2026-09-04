@@ -83,7 +83,7 @@ Different monitor resolutions and refresh rates produce distinct fundamental fre
 
 ---
 
-## 🚀 Key Features in Version 1.2
+## 🚀 Key Features in Version 1.3
 
 * **🌐 Automatic Multilingual Detection:** Reads `navigator.language` on startup and localizes the UI automatically into English, Turkish, French, German, Spanish, or Chinese.
 * **⚡ Live Frequency Calculation Engine:** Probes resolution and refresh rate via high-resolution timers (`performance.now()`) to dynamically predict the active transmission frequency.
