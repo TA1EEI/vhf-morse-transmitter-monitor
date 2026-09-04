@@ -120,6 +120,10 @@ If you use this project in your research, academic work, or technical experiment
 
 If you use this project or reference the EMI transmission methodology in your research, please cite:
 
+## 📖 Citation
+
+If you use this project or reference the EMI transmission methodology in your research, please cite:
+
 ```bibtex
 @software{isik_2026_22307838,
   author       = {Işık, Efe},
@@ -129,9 +133,12 @@ If you use this project or reference the EMI transmission methodology in your re
   publisher    = {Zenodo},
   version      = {v1.3.0},
   doi          = {10.5281/zenodo.22307838},
-  url          = {[https://doi.org/10.5281/zenodo.22307838](https://doi.org/10.5281/zenodo.22307838)}
+  url          = {https://doi.org/10.5281/zenodo.22307838}
 }
+```
 
 
-### Courtesy Notification Request
+### 📬 Courtesy Notification Request
 While not legally required by the MIT License, if you use this software in an academic paper, research project, commercial deployment, or radio experiment, the author kindly requests that you send a brief notification email to `2007efeisik@gmail.com` or open a discussion thread on GitHub describing your use case.
+
+
