@@ -8,6 +8,7 @@ Articles, media features, and community discussions covering the **VHF Morse Tra
 
 | Platform | Article Title | Topic / Focus | Language |
 | :--- | :--- | :--- | :--- |
+| **UK NCSC (CTO Briefing)** | [CTO at NCSC Summary: week ending September 6th](https://ctoatncsc.substack.com/p/cto-at-ncsc-summary-week-ending-september-625) | Featured by Ollie Whitehouse (CTO, UK National Cyber Security Centre) as a real-world TEMPEST risk example | English |
 | **Hackaday** | [Get Your Monitor Transmitting VHF With A Browser Tool](https://hackaday.com/2026/08/30/get-your-monitor-transmitting-vhf-with-a-browser-tool/) | Hardware hacking, display timing math & browser-based VHF generation | English |
 | **RTL-SDR.com** | [An HTML Browser Page that Uses Display Pixel Clock EMI Leakage to Transmit VHF Morse Code](https://www.rtl-sdr.com/an-html-browser-page-that-uses-display-pixel-clock-emi-leakage-to-transmit-vhf-morse-code/) | Software-defined radio testing, pixel clock EMI leakage | English |
 | **Evrim Ağacı** | [Ekranınız Bir Radyo Vericisine Dönüşebilir mi? TEMPEST ve Ekran Yan Kanal Elektromanyetik Sızıntıları](https://evrimagaci.org/blog/ekraniniz-bir-radyo-vericisine-donusebilir-mi-tempest-ve-ekran-yan-kanal-elektromanyetik-sizintilari-23730) | In-depth physics of electromagnetic side-channel leakage & TEMPEST | Turkish |
@@ -16,12 +17,17 @@ Articles, media features, and community discussions covering the **VHF Morse Tra
 
 ### 💬 Community & Technical Discussions
 
+* **Aaron Parecki (Personal Web / Bookmarks):** [Bookmarked under #hamradio](https://aaronparecki.com/bookmarks)  
+  *Curated by OAuth 2.0 co-author, IndieWeb pioneer, and amateur radio operator Aaron Parecki (W7APK).*
 * **Reddit (`r/amateurradio`):** [I made a zero install browser tool that uses monitor EMI to transmit VHF Morse code](https://www.reddit.com/r/amateurradio/comments/1w10l72/i_made_a_zero_install_browser_tool_that_uses/)  
   *Community reception reports, waterfall SDR graphs, and reproduction tests across different GPU/monitor combinations.*
 
 ---
 
 ### 📌 Highlights & Direct Quotes
+
+> *"Efe provides a lovely TEMPEST example to highlight the risk."*  
+> — **Ollie Whitehouse**, Chief Technology Officer (CTO) at the UK **National Cyber Security Centre (NCSC)** ([CTO at NCSC Summary](https://ctoatncsc.substack.com/p/cto-at-ncsc-summary-week-ending-september-625))
 
 > *"The concept is straightforward—[Efe]’s tool manipulates pixel clocks in order to create spurious transmissions from your computer’s graphics hardware... Still, it’s an interesting project that shows you just how electromagnetic interference can leak out of just about anything under the right conditions."*  
 > — **[Hackaday](https://hackaday.com/2026/08/30/get-your-monitor-transmitting-vhf-with-a-browser-tool/)**
