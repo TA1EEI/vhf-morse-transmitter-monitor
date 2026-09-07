@@ -14,8 +14,9 @@
 
 ## 📰 Featured In & Media Coverage
 
-* **[Hackaday]** - [Get Your Monitor Transmitting VHF With A Browser Tool](https://hackaday.com/2026/08/30/get-your-monitor-transmitting-vhf-with-a-browser-tool/)
-* **[RTL-SDR.com]** - [An HTML Browser Page That Uses Display Pixel Clock EMI Leakage to Transmit VHF Morse Code](https://www.rtl-sdr.com/an-html-browser-page-that-uses-display-pixel-clock-emi-leakage-to-transmit-vhf-morse-code/)
+* **[UK NCSC (National Cyber Security Centre)]** – Included in the [CTO Weekly Summary (September 2026)](https://ctoatncsc.substack.com/p/cto-at-ncsc-summary-week-ending-september-625) highlighting browser-driven physical side-channel emissions and display RF leakage.
+* **[Hackaday]** – [*Get Your Monitor Transmitting VHF With A Browser Tool*](https://hackaday.com/2026/08/30/get-your-monitor-transmitting-vhf-with-a-browser-tool/) – Covered as a zero-dependency hardware hack turning standard monitors into unintentional RF transmitters.
+* **[RTL-SDR.com]** – [*An HTML Browser Page That Uses Display Pixel Clock EMI Leakage to Transmit VHF Morse Code*](https://www.rtl-sdr.com/an-html-browser-page-that-uses-display-pixel-clock-emi-leakage-to-transmit-vhf-morse-code/) – Detailed technical overview of SDR reception and pixel clock modulation.
 
 ---
 
